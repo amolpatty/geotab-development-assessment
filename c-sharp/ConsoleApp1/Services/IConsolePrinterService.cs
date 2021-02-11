@@ -4,7 +4,9 @@
     {
         void PrintNewline();
 
-        void PrintValue(string value);
+        void PrintMessage(string value);
+        void PrintErrorMessage(string value);
         void PrettyPrintResults(string[] results);
+        void PrettyPrintCategories(string[] results);
     }
 }

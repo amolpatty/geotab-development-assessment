@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace JokeGenerator.Services
 {
@@ -17,13 +18,13 @@ namespace JokeGenerator.Services
         /// </summary>
         /// <param name="client2"></param>
         /// <returns></returns>
-		public dynamic GetNames()
+		public async Task<dynamic> GetNamesAsync()
         {
             string result = string.Empty;
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri(_url);
-                result = client.GetStringAsync("").Result;
+                result = await client.GetStringAsync("");
             }
             return JsonConvert.DeserializeObject<dynamic>(result);
         }

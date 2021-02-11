@@ -8,11 +8,19 @@ namespace JokeGenerator.Services
     /// </summary>
     public class ConsolePrinterService : IConsolePrinterService
     {        
-        public void PrintValue(string value)
+        public void PrintMessage(string value)
         {
             if (!string.IsNullOrWhiteSpace(value))
             {
                 Console.WriteLine(value);
+            }
+        }
+
+        public void PrintErrorMessage(string value)
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                PrettyPrintResults(new string[] { value });
             }
         }
 
@@ -25,15 +33,27 @@ namespace JokeGenerator.Services
         {            
             if (results != null)
             {
-                PrintValue(Constants.ScreenSeparator);
+                PrintMessage(Constants.ScreenSeparator);
 
                 foreach (string r in results)
                 {
-                    PrintValue(Environment.NewLine + r);
+                    PrintMessage(Environment.NewLine + r);
                 }
 
-                PrintValue(Constants.ScreenSeparator);
+                PrintMessage(Constants.ScreenSeparator);
             }
-        }        
+        }
+
+        public void PrettyPrintCategories(string[] results)
+        {
+            if (results != null)
+            {
+                PrintMessage(Constants.ScreenSeparator);
+
+                PrintMessage("[" + string.Join(",", results) + "]");
+
+                PrintMessage(Constants.ScreenSeparator);
+            }
+        }
     }
 }

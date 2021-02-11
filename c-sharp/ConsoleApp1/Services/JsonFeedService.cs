@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using JokeGenerator.Models;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 
 namespace JokeGenerator.Services
@@ -9,7 +11,7 @@ namespace JokeGenerator.Services
     public class JsonFeedService: IJsonFeedService
     {
         readonly string _url;
-        readonly int _numberOfJokes = 1;
+        readonly int _defaultNumberOfJokes = 1;
 
 		// Recommended pattern as per this article
 		// https://www.aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
@@ -20,18 +22,41 @@ namespace JokeGenerator.Services
         {
             _url = endpoint;
 			client.BaseAddress = new Uri(_url);
-			_numberOfJokes = numberOfJokes;
+			_defaultNumberOfJokes = numberOfJokes;
         }
         
-		public string[] GetRandomJokes(IPerson person, string category, int requestedNumOfJokes)
+		public async Task<string[]> GetRandomJokesAsync(IPerson person, string category, int requestedNumOfJokes)
 		{
+			requestedNumOfJokes = requestedNumOfJokes > 0 ? requestedNumOfJokes : _defaultNumberOfJokes;
+
 			string[] jokes = new string[requestedNumOfJokes];
 			// todo: use using
 			// validate category against actual categories
 
 			int jokeCount = 0;
-						
+
 			string url = "jokes/random";
+			if (!string.IsNullOrWhiteSpace(category))
+			{
+				string[] categories = await GetCategoriesAsync();
+				if (categories?.Length <= 0)
+                {
+					return new string[] { Constants.ErrorNoCategoriesFound };
+                }
+
+				List<string> categoryList = new List<string>(categories);
+				if (categoryList.Contains(category))
+				{
+					var parametersToAdd = new Dictionary<string, string> { { "category", category } };
+					url = QueryHelpers.AddQueryString(url, parametersToAdd);
+				}
+				else
+                {
+					return new string[] { Constants.ErrorInvalidCategories };
+                }
+			}
+
+			/*
 			if (category != null)
 			{
 				if (url.Contains('?'))
@@ -40,10 +65,11 @@ namespace JokeGenerator.Services
 				url += "category=";
 				url += category;
 			}
+			*/
 
 			while (jokeCount < requestedNumOfJokes)
 			{
-				string joke = Task.FromResult(client.GetStringAsync(url).Result).Result;
+				string joke = await client.GetStringAsync(url);
 
 				if (person?.FirstName != null && person?.LastName != null)
 				{
@@ -58,10 +84,18 @@ namespace JokeGenerator.Services
 			return jokes;
         }
 
-		public string[] GetCategories()
-		{	
+		public async Task<string[]> GetCategoriesAsync()
+		{
 			// fixed the url here
-			return new string[] { Task.FromResult(client.GetStringAsync("jokes/categories").Result).Result };
+			string categories = await client.GetStringAsync("jokes/categories");
+			if (!string.IsNullOrWhiteSpace(categories))
+			{
+				return categories.Replace("[", "").Replace("]","").Replace("\"","").Split(",");
+			}
+			else
+			{
+				return new string[] { Constants.ErrorNoCategoriesFound };
+			}
 		}
     }
 }

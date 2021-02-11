@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
 
 namespace JokeGenerator.Services
 {
     public interface IPersonService
     {
-        dynamic GetNames();
+        Task<dynamic> GetNamesAsync();
     }
 }

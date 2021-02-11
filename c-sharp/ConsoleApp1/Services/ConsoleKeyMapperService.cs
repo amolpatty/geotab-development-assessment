@@ -6,7 +6,7 @@ namespace JokeGenerator.Services
     {
         public char GetEnteredKey(ConsoleKeyInfo consoleKeyInfo)
         {
-            char key = 'c';
+            char key = '?';
             switch (consoleKeyInfo.Key)
             {
                 case ConsoleKey.C:
@@ -44,6 +44,9 @@ namespace JokeGenerator.Services
                     break;
                 case ConsoleKey.Y:
                     key = 'y';
+                    break;
+                case ConsoleKey.Q:
+                    key = 'q';
                     break;
             }
 
