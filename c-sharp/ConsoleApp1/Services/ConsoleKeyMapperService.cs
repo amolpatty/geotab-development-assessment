@@ -47,7 +47,7 @@ namespace JokeGenerator.Services
                     break;
                 case ConsoleKey.Q:
                     key = 'q';
-                    break;
+                    break;                
             }
 
             return key;

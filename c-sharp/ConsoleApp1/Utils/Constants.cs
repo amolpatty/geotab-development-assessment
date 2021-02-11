@@ -8,6 +8,7 @@
         public const string HelpPrompt = "Press ? to get instructions.";
         public const string CategoriesPrompt = "Press c to get categories";
         public const string RandomJokesPrompt = "Press r to get random jokes";
+        public const string QuitPrompt = "Press q to close the application";
         public const string RandomNamesPrompt = "Want to use a random name? y/n";
         public const string SpecifyCategoryPrompt = "Want to specify a category? y/n";
         public const string JokesCountPrompt = "How many jokes do you want? (1-9)";
