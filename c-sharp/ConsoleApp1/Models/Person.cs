@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace JokeGenerator
+﻿namespace JokeGenerator.Models
 {
     /// <summary>
     /// This class stores the details of a Person

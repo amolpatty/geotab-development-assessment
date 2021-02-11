@@ -2,7 +2,9 @@
 {
     public interface IConsolePrinterService
     {
-        string ToString();
-        IConsolePrinterService Value(string value);
+        void PrintNewline();
+
+        void PrintValue(string value);
+        void PrettyPrintResults(string[] results);
     }
 }

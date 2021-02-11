@@ -1,4 +1,6 @@
-﻿namespace JokeGenerator.Services
+﻿using JokeGenerator.Models;
+
+namespace JokeGenerator.Services
 {
     interface IUserPromptService
     {

@@ -13,6 +13,7 @@
         public const string JokesCountPrompt = "How many jokes do you want? (1-9)";
         public const string EnterCategoryPrompt = "Enter a category.";
 
+        public const string ScreenSeparator = "--------------------------------------------------------";
         public const string ChuckNorris = "Chuck Norris";
     }
 }

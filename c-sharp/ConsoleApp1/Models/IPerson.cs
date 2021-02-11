@@ -1,4 +1,4 @@
-﻿namespace JokeGenerator
+﻿namespace JokeGenerator.Models
 {
     public interface IPerson
     {

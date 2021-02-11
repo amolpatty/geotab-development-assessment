@@ -7,22 +7,33 @@ namespace JokeGenerator.Services
     /// This class is responsible for printing the user interaction messages to the Console
     /// </summary>
     public class ConsolePrinterService : IConsolePrinterService
-    {
-        private static string printValue;
-
-        public IConsolePrinterService Value(string value)
+    {        
+        public void PrintValue(string value)
         {
-            printValue = value;
-            return this;
-        }
-
-        public override string ToString()
-        {
-            if (!string.IsNullOrWhiteSpace(printValue))
+            if (!string.IsNullOrWhiteSpace(value))
             {
-                Console.WriteLine(Environment.NewLine + printValue);
+                Console.WriteLine(value);
             }
-            return null;
         }
+
+        public void PrintNewline()
+        {
+            Console.WriteLine(Environment.NewLine);
+        }
+
+        public void PrettyPrintResults(string[] results)
+        {            
+            if (results != null)
+            {
+                PrintValue(Constants.ScreenSeparator);
+
+                foreach (string r in results)
+                {
+                    PrintValue(Environment.NewLine + r);
+                }
+
+                PrintValue(Constants.ScreenSeparator);
+            }
+        }        
     }
 }
