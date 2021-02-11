@@ -1,59 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿// removed unused using
+using System;
+using JokeGenerator;
 
 namespace ConsoleApp1
 {
     class Program
     {
         static string[] results = new string[50];
-        static char key;
-        static Tuple<string, string> names;
+        static char key;        
         static ConsolePrinter printer = new ConsolePrinter();
 
         static void Main(string[] args)
         {
-            printer.Value("Press ? to get instructions.").ToString();
+            bool randomPerson = false;
+            printer.Value(Constants.HelpPrompt).ToString();
             if (Console.ReadLine() == "?")
             {
                 while (true)
                 {
-                    printer.Value("Press c to get categories").ToString();
-                    printer.Value("Press r to get random jokes").ToString();
+                    printer.Value(Constants.CategoriesPrompt).ToString();
+                    printer.Value(Constants.RandomJokesPrompt).ToString();
                     GetEnteredKey(Console.ReadKey());
                     if (key == 'c')
                     {
-                        getCategories();
+                        GetCategories();
                         PrintResults();
                     }
                     if (key == 'r')
                     {
-                        printer.Value("Want to use a random name? y/n").ToString();
+                        printer.Value(Constants.RandomNamesPrompt).ToString();
                         GetEnteredKey(Console.ReadKey());
                         if (key == 'y')
-                            GetNames();
-                        printer.Value("Want to specify a category? y/n").ToString();
+                            randomPerson = true;
+                        printer.Value(Constants.SpecifyCategoryPrompt).ToString();
                         if (key == 'y')
                         {
-                            printer.Value("How many jokes do you want? (1-9)").ToString();
+                            printer.Value(Constants.JokesCountPrompt).ToString();
                             int n = Int32.Parse(Console.ReadLine());
-                            printer.Value("Enter a category;").ToString();
-                            GetRandomJokes(Console.ReadLine(), n);
+                            printer.Value(Constants.EnterCategoryPrompt).ToString();
+                            GetRandomJokes(randomPerson? GetRandomPerson(): null, Console.ReadLine(), n);
                             PrintResults();
                         }
                         else
                         {
-                            printer.Value("How many jokes do you want? (1-9)").ToString();
+                            printer.Value(Constants.JokesCountPrompt).ToString();
                             int n = Int32.Parse(Console.ReadLine());
-                            GetRandomJokes(null, n);
+                            GetRandomJokes(randomPerson? GetRandomPerson(): null, null, n);
                             PrintResults();
                         }
                     }
-                    names = null;
+                    randomPerson = false;
                 }
             }
 
@@ -107,23 +103,23 @@ namespace ConsoleApp1
             }
         }
 
-        private static void GetRandomJokes(string category, int number)
+        private static void GetRandomJokes(IPerson person, string category, int number)
         {
             new JsonFeed("https://api.chucknorris.io", number);
-            results = JsonFeed.GetRandomJokes(names?.Item1, names?.Item2, category);
+            results = JsonFeed.GetRandomJokes(person, category);
         }
 
-        private static void getCategories()
+        private static void GetCategories()
         {
             new JsonFeed("https://api.chucknorris.io", 0);
             results = JsonFeed.GetCategories();
         }
 
-        private static void GetNames()
+        private static IPerson GetRandomPerson()
         {
             new JsonFeed("https://www.names.privserv.com/api/", 0);
-            dynamic result = JsonFeed.Getnames();
-            names = Tuple.Create(result.name.ToString(), result.surname.ToString());
+            dynamic result = JsonFeed.GetNames();
+            return new Person(result.name.ToString(), result.surname.ToString(), result.gender.ToString());
         }
     }
 }

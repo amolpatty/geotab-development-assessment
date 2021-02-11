@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using JokeGenerator;
 using Newtonsoft.Json;
 
 namespace ConsoleApp1
@@ -11,15 +9,20 @@ namespace ConsoleApp1
     class JsonFeed
     {
         static string _url = "";
+		static int _numberOfJokes = 1;
 
         public JsonFeed() { }
-        public JsonFeed(string endpoint, int results)
+        public JsonFeed(string endpoint, int numberOfJokes)
         {
             _url = endpoint;
+			_numberOfJokes = numberOfJokes;
         }
         
-		public static string[] GetRandomJokes(string firstname, string lastname, string category)
+		public static string[] GetRandomJokes(IPerson person, string category)
 		{
+			// todo: use using
+			// validate category against actual categories
+
 			HttpClient client = new HttpClient();
 			client.BaseAddress = new Uri(_url);
 			string url = "jokes/random";
@@ -34,12 +37,17 @@ namespace ConsoleApp1
 
             string joke = Task.FromResult(client.GetStringAsync(url).Result).Result;
 
-            if (firstname != null && lastname != null)
+            if (person?.FirstName != null && person?.LastName != null)
             {
-                int index = joke.IndexOf("Chuck Norris");
+				// replace with String.Replace
+				/*
+                int index = joke.IndexOf(Constants.ChuckNorris);
                 string firstPart = joke.Substring(0, index);
-                string secondPart = joke.Substring(0 + index + "Chuck Norris".Length, joke.Length - (index + "Chuck Norris".Length));
+                string secondPart = joke.Substring(0 + index + Constants.ChuckNorris.Length, joke.Length - (index + Constants.ChuckNorris.Length));
                 joke = firstPart + " " + firstname + " " + lastname + secondPart;
+				*/
+
+				joke = joke.Replace(Constants.ChuckNorris, person?.FirstName + " " + person?.LastName);
             }
 
             return new string[] { JsonConvert.DeserializeObject<dynamic>(joke).value };
@@ -50,7 +58,7 @@ namespace ConsoleApp1
         /// </summary>
         /// <param name="client2"></param>
         /// <returns></returns>
-		public static dynamic Getnames()
+		public static dynamic GetNames()
 		{
 			HttpClient client = new HttpClient();
 			client.BaseAddress = new Uri(_url);
@@ -63,7 +71,8 @@ namespace ConsoleApp1
 			HttpClient client = new HttpClient();
 			client.BaseAddress = new Uri(_url);
 
-			return new string[] { Task.FromResult(client.GetStringAsync("categories").Result).Result };
+			// fixed the url here
+			return new string[] { Task.FromResult(client.GetStringAsync("jokes/categories").Result).Result };
 		}
     }
 }

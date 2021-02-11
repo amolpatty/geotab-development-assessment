@@ -1,26 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+// removed unused usings
 
 namespace ConsoleApp1
 {
+    /// <summary>
+    /// This class is responsible for printing the user interaction messages to the Console
+    /// </summary>
     public class ConsolePrinter
     {
-        public static object PrintValue;
+        private static string printValue;
 
         public ConsolePrinter Value(string value)
         {
-            PrintValue = value;
+            printValue = value;
             return this;
         }
 
         public override string ToString()
         {
-            Console.WriteLine(PrintValue);
+            if (!string.IsNullOrWhiteSpace(printValue))
+            {
+                Console.WriteLine(Environment.NewLine + printValue);
+            }
             return null;
         }
     }
