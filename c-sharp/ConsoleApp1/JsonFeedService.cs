@@ -1,24 +1,23 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using JokeGenerator;
 using Newtonsoft.Json;
 
-namespace ConsoleApp1
+namespace JokeGenerator.Services
 {
-    class JsonFeed
+    public class JsonFeedService: IJsonFeedService
     {
-        static string _url = "";
+		string _url = "";
 		static int _numberOfJokes = 1;
 
-        public JsonFeed() { }
-        public JsonFeed(string endpoint, int numberOfJokes)
+        public JsonFeedService() { }
+        public JsonFeedService(string endpoint, int numberOfJokes)
         {
             _url = endpoint;
 			_numberOfJokes = numberOfJokes;
         }
         
-		public static string[] GetRandomJokes(IPerson person, string category)
+		public string[] GetRandomJokes(IPerson person, string category)
 		{
 			// todo: use using
 			// validate category against actual categories
@@ -53,20 +52,7 @@ namespace ConsoleApp1
             return new string[] { JsonConvert.DeserializeObject<dynamic>(joke).value };
         }
 
-        /// <summary>
-        /// returns an object that contains name and surname
-        /// </summary>
-        /// <param name="client2"></param>
-        /// <returns></returns>
-		public static dynamic GetNames()
-		{
-			HttpClient client = new HttpClient();
-			client.BaseAddress = new Uri(_url);
-			var result = client.GetStringAsync("").Result;
-			return JsonConvert.DeserializeObject<dynamic>(result);
-		}
-
-		public static string[] GetCategories()
+		public string[] GetCategories()
 		{
 			HttpClient client = new HttpClient();
 			client.BaseAddress = new Uri(_url);
