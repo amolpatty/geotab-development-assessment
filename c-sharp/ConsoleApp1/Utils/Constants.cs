@@ -16,6 +16,8 @@
         public const string ErrorInvalidJokeCount = "Number of jokes must be a number. (1-9)";
         public const string ErrorInvalidCategories = "Category is not valid";
         public const string ErrorNoCategoriesFound = "No categories found";
+        public const string ErrorSystemFault = "There was an error generating jokes. Please contact system administator";
+        public const string ErrorDetails = "Error details:";
 
         public const string ScreenSeparator = "--------------------------------------------------------";
         public const string ChuckNorris = "Chuck Norris";

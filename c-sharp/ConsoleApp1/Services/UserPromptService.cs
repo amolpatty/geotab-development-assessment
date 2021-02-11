@@ -85,7 +85,7 @@ namespace JokeGenerator.Services
         private async Task GetRandomJokesByCount(IConsolePrinterService printer, string[] results, bool randomPerson, string category)
         {
             printer.PrintMessage(Constants.JokesCountPrompt);
-            char key = keyMapper.GetEnteredKey(Console.ReadKey());
+            char key = keyMapper.GetEnteredKey(Console.ReadKey());            
             if (Int32.TryParse(key.ToString(), out int n))
             {
                 printer.PrintNewline();

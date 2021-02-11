@@ -55,18 +55,7 @@ namespace JokeGenerator.Services
 					return new string[] { Constants.ErrorInvalidCategories };
                 }
 			}
-
-			/*
-			if (category != null)
-			{
-				if (url.Contains('?'))
-					url += "&";
-				else url += "?";
-				url += "category=";
-				url += category;
-			}
-			*/
-
+						
 			while (jokeCount < requestedNumOfJokes)
 			{
 				string joke = await client.GetStringAsync(url);
