@@ -2,7 +2,7 @@
 
 namespace JokeGenerator.Services
 {
-    class ConsoleKeyMapperService: IConsoleKeyMapperService
+    public class ConsoleKeyMapperService: IConsoleKeyMapperService
     {
         public char GetEnteredKey(ConsoleKeyInfo consoleKeyInfo)
         {
