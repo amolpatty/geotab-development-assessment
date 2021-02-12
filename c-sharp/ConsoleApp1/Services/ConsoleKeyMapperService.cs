@@ -18,6 +18,9 @@ namespace JokeGenerator.Services
                 case ConsoleKey.D1:
                     key = '1';
                     break;
+                case ConsoleKey.D2:
+                    key = '2';
+                    break;
                 case ConsoleKey.D3:
                     key = '3';
                     break;

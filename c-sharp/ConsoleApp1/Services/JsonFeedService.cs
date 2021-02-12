@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using JokeGenerator.Models;
+using JokeGenerator.Utils;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 
@@ -60,10 +61,29 @@ namespace JokeGenerator.Services
 			{
 				string joke = await client.GetStringAsync(url);
 
-				if (person?.FirstName != null && person?.LastName != null)
+				if (!string.IsNullOrWhiteSpace(joke))
 				{
-					joke = joke.Replace(Constants.ChuckNorris, person?.FirstName + " " + person?.LastName);
+					if (person != null)
+					{
+						if (!string.IsNullOrWhiteSpace(person.FirstName) && !string.IsNullOrWhiteSpace(person.LastName))
+						{
+							joke = joke.SafeReplace(Constants.ChuckNorris, person.FirstName + " " + person.LastName, true);
+						}
+					
+						// Try to fix gender specific words
+						if (person.Gender.Equals(Constants.Female, StringComparison.InvariantCultureIgnoreCase))
+						{
+							joke = joke.SafeReplace(Constants.He, Constants.She, true)
+								.SafeReplace(Constants.Him, Constants.Her, true)
+								.SafeReplace(Constants.His, Constants.Her, true)
+								.SafeReplace(Constants.he, Constants.she, true);								
+						}
+					}
 				}
+				else
+                {
+					joke = Constants.ErrorNoJokeFound;
+                }
 								
 				jokes[jokeCount] = JsonConvert.DeserializeObject<dynamic>(joke).value;
 				
