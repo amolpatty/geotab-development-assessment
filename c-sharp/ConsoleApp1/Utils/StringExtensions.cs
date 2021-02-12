@@ -1,7 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 
 namespace JokeGenerator.Utils
-{    public static class StringExtensions
+{
+    public static class StringExtensions
     {
         public static string SafeReplace(this string input, string find, string replace, bool matchWholeWord)
         {

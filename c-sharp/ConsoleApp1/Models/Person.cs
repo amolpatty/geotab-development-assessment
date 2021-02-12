@@ -7,12 +7,13 @@
     {
         public Person(string firstName, string lastName, string gender)
         {
-            FirstName = firstName;
-            LastName = lastName;
+            Name = firstName;
+            SurName = lastName;
             Gender = gender;
         }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string Name { get; set; }
+        public string SurName { get; set; }
         public string Gender { get; set; }
+        public string Region { get; set; }
     }
 }

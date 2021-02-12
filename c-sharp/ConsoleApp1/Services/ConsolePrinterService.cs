@@ -35,12 +35,23 @@ namespace JokeGenerator.Services
             {
                 PrintMessage(Constants.ScreenSeparator);
 
+                int rowCount = 0;
                 foreach (string r in results)
                 {
-                    PrintMessage(Environment.NewLine + r);
+                    // print new line prior to the text only if it is the second item or above
+                    if (rowCount > 0)
+                    {
+                        PrintMessage(Environment.NewLine);
+                        PrintMessage(Constants.ScreenSeparator);
+                    }
+
+                    PrintMessage(r);
+
+                    rowCount++;
                 }
 
                 PrintMessage(Constants.ScreenSeparator);
+                PrintMessage(Environment.NewLine);
             }
         }
 
@@ -53,6 +64,7 @@ namespace JokeGenerator.Services
                 PrintMessage("[" + string.Join(",", results) + "]");
 
                 PrintMessage(Constants.ScreenSeparator);
+                PrintMessage(Environment.NewLine);
             }
         }
     }

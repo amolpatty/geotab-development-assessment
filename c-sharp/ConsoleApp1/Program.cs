@@ -2,6 +2,7 @@
 using JokeGenerator;
 using JokeGenerator.Models;
 using JokeGenerator.Services;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -23,16 +24,17 @@ namespace JokeGeneratorConsoleApp
                 var config = builder.Build();
                 var settings = config.GetSection("Settings").Get<Settings>();
 
-                //Setup our DI
-                var serviceProvider = new ServiceCollection()
+                // Setup our DI
+                var serviceProvider = new ServiceCollection()           
+                    .AddMemoryCache()
                     .AddSingleton<IConsolePrinterService, ConsolePrinterService>()
                     .AddSingleton<IConsoleKeyMapperService, ConsoleKeyMapperService>()
                     .AddSingleton<IPersonService>(x => new PersonService(settings.RandomPersonAPI))
-                    .AddSingleton<IJsonFeedService>(j => new JsonFeedService(settings.ChuckNorrisAPI, settings.DefaultNumberOfJokes))
-                    .AddSingleton<IUserPromptService, UserPromptService>()
+                    .AddSingleton<IJokesJsonFeedService>(j => new JokesJsonFeedService(settings.ChuckNorrisAPI, settings.DefaultNumberOfJokes))
+                    .AddSingleton<IUserPromptService, UserPromptService>()                    
                     .BuildServiceProvider();
 
-                //Kick start user interaction
+                // Kick start user interaction
                 IUserPromptService userPrompt = serviceProvider.GetService<IUserPromptService>();
                 await userPrompt.StartInteractionAsync();
             }
@@ -40,6 +42,6 @@ namespace JokeGeneratorConsoleApp
             {
                 Console.WriteLine(Environment.NewLine + Constants.ErrorSystemFault + " " + Constants.ErrorDetails + " " + ex?.Message);
             }
-        }        
+        }
     }
 }

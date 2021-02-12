@@ -2,8 +2,9 @@
 {
     public interface IPerson
     {
-        string FirstName { get; set; }
+        string Name { get; set; }
         string Gender { get; set; }
-        string LastName { get; set; }
+        string SurName { get; set; }
+        string Region { get; set; }
     }
 }

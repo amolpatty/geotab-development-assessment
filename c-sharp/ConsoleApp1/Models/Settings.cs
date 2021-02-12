@@ -4,7 +4,6 @@
     {
         public string ChuckNorrisAPI { get; set; }
         public string RandomPersonAPI { get; set; }
-
         public int DefaultNumberOfJokes { get; set; }
     }
 }
