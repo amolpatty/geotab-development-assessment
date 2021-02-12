@@ -14,6 +14,7 @@ namespace JokeGenerator.Services
     /// </summary>
     public class JokesJsonFeedService : IJokesJsonFeedService
     {
+        readonly IJokeScrubUtil _jokeScrubUtil;
         readonly string _url;
         readonly int _defaultNumberOfJokes = 1;
 
@@ -23,8 +24,9 @@ namespace JokeGenerator.Services
         private static readonly HttpClient client = new HttpClient();
 
         public JokesJsonFeedService() { }
-        public JokesJsonFeedService(string endpoint, int numberOfJokes)
+        public JokesJsonFeedService(IJokeScrubUtil jokeScrubUtil, string endpoint, int numberOfJokes)
         {
+            _jokeScrubUtil = jokeScrubUtil;
             _url = endpoint;
             client.BaseAddress = new Uri(_url);
             _defaultNumberOfJokes = numberOfJokes;
@@ -37,6 +39,7 @@ namespace JokeGenerator.Services
 
             string[] jokes = new string[requestedNumOfJokes];
 
+            // first we will validate the category and fix the url parameter
             string url = Constants.RandomJokesApiURL;
             if (!string.IsNullOrWhiteSpace(category))
             {
@@ -66,45 +69,34 @@ namespace JokeGenerator.Services
             }
 
             int jokeCount = 0;
-            // get the jokes 
-            // todo change to task.whenall
+            
+            // get the jokes asynchronously      
+            // be careful do not call await in a loop. Use task.whenall outside the loop for efficiency
+            var jokesTasks = new List<Task<string>>();
             while (jokeCount < requestedNumOfJokes)
+            {                
+                var jokesTask = client.GetStringAsync(url);
+
+                // Here we are trigerring tasks asynchronously
+                // be careful do not call await in a loop. Use task.whenall outside the loop for efficiency
+                jokesTasks.Add(jokesTask);             
+
+                // increment jokeCounter
+                jokeCount++;
+            }
+
+            // wait for the tasks to finish
+            var fetchedJokes = await Task.WhenAll(jokesTasks);
+
+            int scrubbedJokeCount = 0;
+            foreach(string joke in fetchedJokes)
             {
-                string joke = await client.GetStringAsync(url);
-
-                if (!string.IsNullOrWhiteSpace(joke))
-                {
-                    if (person != null)
-                    {
-                        // Chuck Norris string is immutable (c# joke)
-                        // Our only option is to create a copy by replacing his name with a random person
-                        if (!string.IsNullOrWhiteSpace(person.Name) && !string.IsNullOrWhiteSpace(person.SurName))
-                        {
-                            joke = joke.SafeReplace(Constants.ChuckNorris, person.Name + " " + person.SurName, true);
-                        }
-
-                        // Try to fix gender specific words
-                        if (person.Gender.Equals(Constants.Female, StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            joke = joke.SafeReplace(Constants.He, Constants.She, true)
-                                .SafeReplace(Constants.Him, Constants.Her, true)
-                                .SafeReplace(Constants.His, Constants.Her, true)
-                                .SafeReplace(Constants.he, Constants.she, true);
-                        }
-                    }
-                }
-                else
-                {
-                    joke = Constants.ErrorNoJokeFound;
-                }
+                string scrubbedJoke = _jokeScrubUtil.ScrubJoke(person, joke);
 
                 // Deserialize the json string to a joke object if we want to use the object for some additional processing
-                // it would be nice if we can use System.Text.Json here.
+                // it would be nice if we can use System.Text.Json here by upgrading to .net core 3.1 or above
                 // todo change to strongly typed joke
-                jokes[jokeCount] = JsonConvert.DeserializeObject<dynamic>(joke).value;
-                
-                // explicitly increment counter. This can be done above as well jokes[jokeCount++]
-                jokeCount++;
+                jokes[scrubbedJokeCount++] = JsonConvert.DeserializeObject<dynamic>(scrubbedJoke).value;
             }
 
             return jokes;

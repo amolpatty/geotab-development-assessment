@@ -37,11 +37,14 @@
         public const string Male = "male";
         public const string Female = "female";
         public const string He = "He";
-        public const string Him = "him";
+        public const string Him = "Him";
         public const string His = "his";
         public const string She = "She";
-        public const string Her = "her";
+        public const string Her = "Her";
+        public const string her = "her";
         public const string he = "he";
+        public const string him = "him";
+        public const string his = "his";
         public const string she = "she";
         public const string himeself = "himself";
         public const string herself = "herself";

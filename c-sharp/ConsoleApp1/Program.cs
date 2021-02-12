@@ -2,6 +2,7 @@
 using JokeGenerator;
 using JokeGenerator.Models;
 using JokeGenerator.Services;
+using JokeGenerator.Utils;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,8 +30,9 @@ namespace JokeGeneratorConsoleApp
                     .AddMemoryCache()
                     .AddSingleton<IConsolePrinterService, ConsolePrinterService>()
                     .AddSingleton<IConsoleKeyMapperService, ConsoleKeyMapperService>()
+                    .AddSingleton<IJokeScrubUtil, JokeScrubUtil>()
                     .AddSingleton<IPersonService>(x => new PersonService(settings.RandomPersonAPI))
-                    .AddSingleton<IJokesJsonFeedService>(j => new JokesJsonFeedService(settings.ChuckNorrisAPI, settings.DefaultNumberOfJokes))
+                    .AddSingleton<IJokesJsonFeedService>(j => new JokesJsonFeedService(j.GetService<IJokeScrubUtil>(), settings.ChuckNorrisAPI, settings.DefaultNumberOfJokes))
                     .AddSingleton<IUserPromptService, UserPromptService>()                    
                     .BuildServiceProvider();
 
